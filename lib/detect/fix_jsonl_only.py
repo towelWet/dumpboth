@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # fix_jsonl_only.py — the ALWAYS-correctable orphan case: we already hold the jsonl,
-# so parse_session.py can render the missing .md straight from it, no hunting needed.
+# so dump/render.py can render the missing .md straight from it, no hunting needed.
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 from pathlib import Path
 
 
-def fix_jsonl_only(pairs: dict, old_chats_dir: str, dumpchat_lib_dir: str) -> list[str]:  # ONE function
-    parse_session_py = str(Path(dumpchat_lib_dir) / "parse_session.py")
+def fix_jsonl_only(pairs: dict, old_chats_dir: str, root_dir: str) -> list[str]:  # ONE function
+    root = Path(root_dir)
+    target = Path(old_chats_dir).parent                  # render.py names folder holding Old Chats
     suggestions: list[str] = []
     for num in sorted(pairs):
         slot = pairs[num]
@@ -19,6 +20,6 @@ def fix_jsonl_only(pairs: dict, old_chats_dir: str, dumpchat_lib_dir: str) -> li
         md_path = str(Path(old_chats_dir) / f"{stem}.md")
         suggestions.append(
             f"oldchat{num}: jsonl-only, fillable now ->\n"
-            f'  python3 "{parse_session_py}" "{slot["jsonl"]}" claude "{old_chats_dir}" > "{md_path}"'
+            f'  python3 "{root / "dump" / "render.py"}" "{root / "agents" / "claude"}" "{slot["jsonl"]}" "{target}" > "{md_path}"'
         )
     return suggestions

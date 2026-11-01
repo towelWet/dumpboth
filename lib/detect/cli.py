@@ -17,13 +17,10 @@ from load_known_lost import load_known_lost          # noqa: E402
 
 def main() -> int:                                    # one function per file
     if len(sys.argv) < 2:
-        print("usage: cli.py <old_chats_dir> [dumpchat_lib_dir]", file=sys.stderr)
+        print("usage: cli.py <old_chats_dir>", file=sys.stderr)
         return 2
     old_chats_dir = sys.argv[1]
-    # dumpchat's lib/ is a fixed sibling location — default to it unless overridden.
-    dumpchat_lib_dir = sys.argv[2] if len(sys.argv) > 2 else str(
-        Path(__file__).parent.parent.parent.parent / "dumpchat" / "lib"
-    )
+    root_dir = str(Path(__file__).parent.parent.parent)   # repo root: fixes name render.py and agents/
     pairs = scan_pairs(old_chats_dir)
     lost = load_known_lost(str(Path(__file__).parent.parent.parent / "db"))  # skill's db/
     accepted = {n: lost[n] for n in pairs if n in lost}   # markers that match a scanned number
@@ -34,7 +31,7 @@ def main() -> int:                                    # one function per file
         print(f"\nKnown lost, accepted ({len(accepted)}) — see db/known-lost/:")
         for n, reason in sorted(accepted.items()):
             print(f"  oldchat{n}: {reason[:90]}")
-    fixes = suggest_fix(pairs, old_chats_dir, dumpchat_lib_dir)
+    fixes = suggest_fix(pairs, old_chats_dir, root_dir)
     if fixes:
         print("\nEasy fixes available (fills the gap without re-hunting a lost source):")
         for line in fixes:

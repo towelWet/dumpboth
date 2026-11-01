@@ -1,0 +1,4 @@
+{"role": "user", "text": "<project_context>demo</project_context>"}
+{"role": "user", "text": "Add a done flag to todo items"}
+{"role": "assistant", "text": "Thought for 3s\nAdded done flag.\n\n\n\nTests pass."}
+{"role": "assistant", "text": "Thought for 3s\nAdded done flag.\n\n\n\nTests pass."}

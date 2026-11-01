@@ -12,8 +12,8 @@ from fix_jsonl_only import fix_jsonl_only            # noqa: E402
 from fix_md_only import fix_md_only                  # noqa: E402
 
 
-def suggest_fix(pairs: dict, old_chats_dir: str, dumpchat_lib_dir: str) -> list[str]:  # ONE function
-    return fix_jsonl_only(pairs, old_chats_dir, dumpchat_lib_dir) + fix_md_only(pairs, old_chats_dir)
+def suggest_fix(pairs: dict, old_chats_dir: str, root_dir: str) -> list[str]:  # ONE function
+    return fix_jsonl_only(pairs, old_chats_dir, root_dir) + fix_md_only(pairs, old_chats_dir)
 
 
 if __name__ == "__main__":                            # python3 suggest_fix.py <old_chats_dir> <dumpchat_lib_dir>

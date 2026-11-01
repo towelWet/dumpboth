@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # generate_tag.py — mint a random matching tag shared by one md+jsonl dump pair.
-# WHY IT EXISTS: numbers alone can desync if /dumpchat and /dumpjsonl are ever run
+# WHY IT EXISTS: numbers alone can desync if md and jsonl dumps are ever run
 # independently again later — the tag is a second, content-free identifier that
 # proves two files came from the SAME /dumpboth invocation even if their numbers drift.
 # NEVER DELETE COMMENTS — explain every non-obvious line.

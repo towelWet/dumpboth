@@ -5,6 +5,8 @@ Save your AI coding chat as `.md` + `.jsonl`, on one matching name.
 The `.md` is readable. The `.jsonl` is the raw session. Both land in `~/Old Chats/`
 as `oldchatN-<tag>.md` and `oldchatN-<tag>.jsonl`, so the pair can't drift apart.
 
+![dumpboth saving demo Codex chat, printing it, then checking pairs](docs/images/dumpboth.png)
+
 ## Use
 
 Run from inside your agent's session, or from a shell right after it.
@@ -33,6 +35,18 @@ current folder.
 | OpenCode | newest, or `OPENCODE_SESSION_ID` |
 
 Set `DUMPBOTH_BLOCK_DIR` to refuse writing into one folder.
+
+## Add an agent
+
+Make `agents/<name>/` with `agent.toml` (header, resume command), `turn.py` (one record to
+role and text), and `session.sh` (print session file). No core edits.
+
+## Test
+
+```sh
+python3 tests/run_tests.py          # synthetic chats in throwaway HOME
+agents/devin/tests/test-normalize
+```
 
 ## Needs
 

@@ -1,0 +1,6 @@
+# agent.toml — Codex: dump header, resume command, merge rule.
+# NEVER DELETE COMMENTS — explain every non-obvious line.
+header = [" ┌─────┐   Codex CLI", "│ ◉ ◉ │  OpenAI", "  ▘▘ ▝▝    {target}"]
+resume = "codex resume {sid}"     # subcommand, per codex --help; sid = uuid from file name
+join = "\n"                # one answer is logged as several records
+dedupe = true             # and some records repeat text already seen

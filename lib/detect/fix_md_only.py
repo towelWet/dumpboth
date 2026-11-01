@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # fix_md_only.py — the CONDITIONALLY-correctable orphan case: an .md's "Source: <path>"
-# footer (written by parse_session.py) may still point at a readable jsonl. If it
+# footer (written by dump/render.py) may still point at a readable jsonl. If it
 # does, filling the gap is a plain copy. If the source is gone, this is NOT the
 # easy case — skip it silently rather than suggesting a manual hunt.
 # NEVER DELETE COMMENTS — explain every non-obvious line.

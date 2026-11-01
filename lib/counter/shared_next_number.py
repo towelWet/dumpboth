@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # shared_next_number.py — compute the ONE oldchatN number both md+jsonl will share.
-# WHY IT EXISTS: dumpchat.command and dumpjsonl.command each auto-increment by
+# WHY IT EXISTS: md.command and jsonl.command each auto-increment by
 # scanning the dir independently — calling them back-to-back would let file #1
 # claim N and file #2 claim N+1 (a race). /dumpboth computes N exactly ONCE here
 # and forces both underlying scripts onto it via DUMP_FORCE_NUM.

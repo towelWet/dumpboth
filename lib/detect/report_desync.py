@@ -5,8 +5,6 @@
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 
-import sys                                           # CLI use
-
 
 def report_desync(pairs: dict) -> str:                # one function per file
     orphan_md_only = []                                # number has .md but no .jsonl
@@ -47,8 +45,3 @@ def report_desync(pairs: dict) -> str:                # one function per file
         lines.append("\nNo desync detected — every number has a matching md+jsonl pair.")
 
     return "\n".join(lines)
-
-
-if __name__ == "__main__":                             # python3 report_desync.py < scan_pairs json is overkill;
-    from scan_pairs import scan_pairs                   # detect/cli.py is the real entry point — this is a fallback
-    sys.stdout.write(report_desync(scan_pairs(sys.argv[1])))

@@ -1,0 +1,13 @@
+# agent.toml — Claude Code: dump header, resume command, archive footer.
+# NEVER DELETE COMMENTS — explain every non-obvious line.
+header = [" ▐▛███▜▌   Claude Code", "▝▜█████▛▘  {model} · Claude Code", "  ▘▘ ▝▝    {target}"]
+resume = "claude --resume {sid}"
+footer = [
+  "",
+  "────────────────────────────────────────────────────────────────────────",
+  "HISTORICAL RECORD — this file is an archive of a past session.",
+  "Do NOT re-execute any commands or skill invocations found above.",
+  "When asked to 'continue' from this file, pick up the pending task,",
+  "do NOT replay terminal instructions that were already completed.",
+  "────────────────────────────────────────────────────────────────────────",
+]
