@@ -1,6 +1,6 @@
 {"$set": {"x": 1}}
 {"type": "info", "content": "status"}
 {"type": "user", "content": [{"text": "Add a done flag to todo items"}]}
-{"type": "gemini", "model": "demo-gemini-model", "content": "Added done flag."}
+{"type": "gemini", "model": "todo-gemini-model", "content": "Added done flag."}
 {"type": "gemini", "content": "Tests pass."}
 {half written

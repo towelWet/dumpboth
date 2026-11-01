@@ -20,10 +20,10 @@ def run_tests():
         session.write_bytes(fixture)
         env = {k: v for k, v in os.environ.items() if k not in HOST_IDS} | {"HOME": str(home)}
         for _ in range(2):                                            # second run must take next number
-            subprocess.run([ROOT / "dumpboth.command", case["agent"], "demo"], env=env, capture_output=True)
+            subprocess.run([ROOT / "dumpboth.command", case["agent"], "todo"], env=env, capture_output=True)
         out = home / "Old Chats"
-        md = sorted(out.glob("oldchat1-demo-*.md"))
-        jsonl = sorted(out.glob("oldchat1-demo-*.jsonl"))
+        md = sorted(out.glob("oldchat1-todo-*.md"))
+        jsonl = sorted(out.glob("oldchat1-todo-*.jsonl"))
         text = md[0].read_text(encoding="utf-8") if md else ""
         problems = [f"missing: {e!r}" for e in case["expect"] if e not in text]
         problems += [f"leaked: {r!r}" for r in case["reject"] if r in text]
@@ -31,7 +31,7 @@ def run_tests():
             problems.append("jsonl is not exact copy")
         if not md or not jsonl or md[0].stem != jsonl[0].stem:
             problems.append("pair names differ")
-        if len(list(out.glob("oldchat2-demo-*"))) != 2:
+        if len(list(out.glob("oldchat2-todo-*"))) != 2:
             problems.append("second run did not take next number")
         print(("FAIL " if problems else "PASS ") + case["agent"], *problems, sep="\n  " if problems else " ")
         failures += bool(problems)

@@ -5,7 +5,7 @@ Save your AI coding chat as `.md` + `.jsonl`, on one matching name.
 The `.md` is readable. The `.jsonl` is the raw session. Both land in `~/Old Chats/`
 as `oldchatN-<tag>.md` and `oldchatN-<tag>.jsonl`, so the pair can't drift apart.
 
-![dumpboth saving demo Codex chat, printing it, then checking pairs](docs/images/dumpboth.png)
+![dumpboth saving real Claude Code chat, then checking its md and jsonl pair](docs/images/dumpboth.png)
 
 ## Use
 
