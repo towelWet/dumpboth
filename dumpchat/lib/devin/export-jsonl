@@ -1,0 +1,37 @@
+#!/bin/bash
+# export-jsonl — Dump the current Devin CLI session's message_nodes VERBATIM to
+# ~/Old Chats/oldchatN[.suffix].jsonl. Mirrors ./export but produces the raw jsonl
+# (no cleaning, no md, no footer) — the training/verbatim artifact.
+set -uo pipefail
+
+APPEND_SUFFIX="${1:-}"
+LIB="$(cd "$(dirname "$0")" && pwd)"
+
+# 1. Locate the CLI sessions database.
+DB=$("$LIB/locate-db") || exit 1
+
+# 2. Select the most-recent session (== the live one; verified by last_activity_at).
+SESSION_JSON=$("$LIB/select-session.py" "$DB") || exit 1
+SESSION_ID=$(echo "$SESSION_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+
+# 3. Number allocation — identical policy to ./export so md+jsonl stay in lockstep.
+OUTDIR="${DEVIN_OUTDIR:-$HOME/Old Chats}"; mkdir -p "$OUTDIR"
+if [ -n "${DUMP_FORCE_NUM:-}" ]; then
+  NEXT="$DUMP_FORCE_NUM"                   # /dumpboth forces the shared number.
+else
+  NEXT=0
+  for f in "$OUTDIR"/oldchat*.md "$OUTDIR"/oldchat*.jsonl; do
+    [ -f "$f" ] || continue
+    N=$(basename "$f" | sed 's/oldchat\([0-9]*\).*/\1/')
+    [ "$N" -ge "$NEXT" ] 2>/dev/null && NEXT=$N
+  done
+  NEXT=$((NEXT + 1))
+fi
+
+[ -n "$APPEND_SUFFIX" ] && FNAME="oldchat${NEXT}-${APPEND_SUFFIX}.jsonl" || FNAME="oldchat${NEXT}.jsonl"
+export_file="$OUTDIR/$FNAME"
+
+# 4. Verbatim export — every chat_message node, node order, untouched.
+"$LIB/read-raw.py" "$DB" "$SESSION_ID" > "$export_file"
+
+echo "$export_file"

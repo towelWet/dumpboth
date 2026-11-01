@@ -1,0 +1,11 @@
+#!/bin/bash
+# locate-db — Locate the Devin CLI session database.
+# Prints the absolute path to stdout. Exits 1 if missing.
+set -uo pipefail
+
+DB="$HOME/.local/share/devin/cli/sessions.db"
+if [ ! -f "$DB" ]; then
+  echo "Error: Devin session database not found at $DB" >&2
+  exit 1
+fi
+echo "$DB"
