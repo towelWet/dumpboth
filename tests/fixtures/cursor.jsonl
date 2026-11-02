@@ -1,4 +1,0 @@
-{"role": "user", "message": {"content": [{"type": "text", "text": "<context>injected</context><user_query>\nAdd a done flag to todo items\n</user_query>"}]}}
-{"role": "assistant", "message": {"content": [{"type": "text", "text": "Added done flag."}, {"type": "tool_use", "name": "Shell", "input": {"command": "npm test"}}]}}
-{"type": "status"}
-{half written

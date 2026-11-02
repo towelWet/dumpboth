@@ -1,6 +1,0 @@
-# agent.toml — Cursor: dump header, resume command, merge rule.
-# NEVER DELETE COMMENTS — explain every non-obvious line.
-header = [" ◈ ◈ ◈ ◈ ◈   Cursor IDE", "  ◈ ◈ ◈    Composer Agent", "  ▘▘ ▝▝    {target}"]
-resume = "cursor agent --resume {sid}"
-join = "\n\n"             # one answer is logged as several records
-dedupe = true

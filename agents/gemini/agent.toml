@@ -1,6 +1,0 @@
-# agent.toml — Gemini CLI: dump header, resume command, merge rule.
-# NEVER DELETE COMMENTS — explain every non-obvious line.
-header = [" ☆ ☆ ☆ ☆ ☆   Gemini CLI", "  ☆ ☆ ☆    {model}", "  ▘▘ ▝▝    {target}"]
-resume = "gemini"
-join = "\n\n"             # consecutive gemini records form one answer
-dedupe = false
