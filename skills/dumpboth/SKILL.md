@@ -70,9 +70,9 @@ Trash (never `rm`). Verified 2026-08-18: writing a note leaves the `.jsonl` sha2
 
 ## DBV — the viewer app
 
-`DBV/` is a small SwiftUI app (`swift build`, installs to `/Applications/DBV.app`)
+`~/.claude/skills/dbv/DBV/` is a small SwiftUI app (`swift build`, installs to `/Applications/DBV.app`)
 that renders `.jsonl` files as a clean chat transcript instead of raw JSON lines.
-Format parsers are dropped under `DBV/Sources/DBVCore/Parsing/Formats/` — Claude and
+Format parsers are dropped under `~/.claude/skills/dbv/DBV/Sources/DBVCore/Parsing/Formats/` — Claude and
 Cursor ship as two folders; adding a dialect is a new folder, not a dump rewrite.
 Rebuild and usage: `/dbv` (`~/.claude/skills/dbv/SKILL.md`).
 
@@ -92,11 +92,11 @@ Per-turn metadata now shown from data already in the dump: wall-clock time, toke
   dumpboth browser (per user directive 2026-08-18).
 
 DBV is registered as the **default app for `.jsonl`** system-wide (via
-`DBV/Tools/Info.plist` + `duti -s com.TowelWare.DBV .jsonl all` in `DBV/build.command`).
+`~/.claude/skills/dbv/DBV/Tools/Info.plist` + `duti -s com.TowelWare.DBV .jsonl all` in `~/.claude/skills/dbv/DBV/build.command`).
 
 Rebuild after any Swift change:
 ```bash
-~/.claude/skills/dumpboth/DBV/build.command
+~/.claude/skills/dbv/DBV/build.command
 ```
 
 ## Architecture (`/split-files` discipline)
@@ -119,8 +119,8 @@ One function per file, folder-per-concern:
 | `lib/detect/fix_md_only.py` | suggest the conditionally-fillable md→jsonl fix |
 | `lib/detect/suggest_fix.py` | thin combiner of the two fix suggesters |
 | `lib/detect/cli.py` | wires scan+report+suggest for `detect` mode |
-| `DBV/Sources/DBVCore/` | pure model/parsing (DumpPair, jsonl parser) — no UI |
-| `DBV/Sources/DBVApp/` | SwiftUI views + AppDelegate (file-open routing) |
+| `~/.claude/skills/dbv/DBV/Sources/DBVCore/` | pure model/parsing (DumpPair, jsonl parser) — no UI |
+| `~/.claude/skills/dbv/DBV/Sources/DBVApp/` | SwiftUI views + AppDelegate (file-open routing) |
 
 `dumpchat.command` and `dumpjsonl.command` both gained a `DUMP_FORCE_NUM` env-var
 override (backward compatible — unset behaves exactly as before) so `/dumpboth` can

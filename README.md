@@ -1,34 +1,28 @@
 # dumpboth
 
-Claude Code skill: `/dumpboth` saves your AI coding chat as `.md` + `.jsonl`, on one matching name.
+dumpboth saves your AI coding chat as `.md` + `.jsonl`.
 
 ![/dumpboth typed in live Claude Code chat, saving matching md and jsonl pair](docs/images/dumpboth.png)
 
-## Install
+## Easy install
 
-```sh
-cp -R skills/* ~/.claude/skills/
-```
+For example, Claude Code:
 
-This repo holds 3 skills that call each other, so install all 3: `dumpboth`, `dumpchat`, `dumpjsonl`.
-Needs Python 3 and Bash.
+Drag the 3 folders in `skills/` to `~/.claude/skills/`
+
+Can't see `.claude`? Press Cmd+Shift+. in Finder.
 
 ## Use
-
-In Claude Code:
 
 ```text
 /dumpboth
 /dumpboth mylabel
-/dumpboth detect
 ```
 
-Files land in `~/Old Chats/`. Add `cursor` or `devin` to save those sessions instead.
+Your chats land in `~/Old Chats/`.
 
-Full instructions: [skills/dumpboth/SKILL.md](skills/dumpboth/SKILL.md).
+## Also see
 
-## See also
+[DBV](https://github.com/towelWet/dbv), a Mac chat viewer for your saved Claude chats.
 
-[dbv](https://github.com/towelWet/dbv): read saved chats on Mac.
-
-[dumpconvert](https://github.com/towelWet/dumpconvert): turn saved chats into training dataset.
+[dumpconvert](https://github.com/towelWet/dumpconvert) turns them into a training dataset.
