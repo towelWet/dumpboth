@@ -8,7 +8,9 @@ dumpboth saves your AI coding chat as `.md` + `.jsonl`.
 
 For example, Claude Code:
 
-Drag the 3 folders in `skills/` to `~/.claude/skills/`
+Drag the 3 folders in `skills/` into `~/.claude/skills`
+
+![Dragging 3 folders from skills into ~/.claude/skills in Finder](docs/images/install.gif)
 
 Can't see `.claude`? Press Cmd+Shift+. in Finder.
 
