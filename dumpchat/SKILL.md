@@ -10,7 +10,7 @@ description: Export current session to Old Chats directory with auto-increment f
 When invoked, run this command **without any other logic or reimplementation**:
 
 ```bash
-~/.claude/skills/dumpchat/dumpchat.command [args]
+~/.claude/skills/dumpboth/dumpchat/dumpchat.command [args]
 ```
 
 Pass any user-provided args directly. Do not inline the logic. Do not reimagine it. Just run the script.
@@ -20,7 +20,7 @@ Pass any user-provided args directly. Do not inline the logic. Do not reimagine 
 If the user says `/dumpchat append -some-suffix`, run:
 
 ```bash
-~/.claude/skills/dumpchat/dumpchat.command -append -some-suffix
+~/.claude/skills/dumpboth/dumpchat/dumpchat.command -append -some-suffix
 ```
 
 This produces `oldchatN-some-suffix.md` where N is auto-incremented.
@@ -35,7 +35,7 @@ This produces `oldchatN-some-suffix.md` where N is auto-incremented.
 If user provides a bare UUID, dump that specific session:
 
 ```bash
-~/.claude/skills/dumpchat/dumpchat.command 59ef6781-2722-4790-971d-22f8b1a40ec9
+~/.claude/skills/dumpboth/dumpchat/dumpchat.command 59ef6781-2722-4790-971d-22f8b1a40ec9
 ```
 
 The script auto-detects UUID pattern and searches all CLI directories for a matching session file.
@@ -88,7 +88,7 @@ Finds the highest `oldchatN.md` file and increments by 1:
 If the user says **'wrong folder'** or **'/dumpchat home'** (or variants: Home, HOME), run the home variant:
 
 ```bash
-~/.claude/skills/dumpchat/dumpchat-wrong-folder.command [args]
+~/.claude/skills/dumpboth/dumpchat/dumpchat-wrong-folder.command [args]
 ```
 
 This exports to `~/Old Chats/` instead of the current working directory.
@@ -151,7 +151,7 @@ Use when:
 
 ## Example of improper skill use (common and stupid)
 
-⏺ Bash(~/.claude/skills/dumpchat/dumpchat-wrong-folder.command -append -site-re)
+⏺ Bash(~/.claude/skills/dumpboth/dumpchat/dumpchat-wrong-folder.command -append -site-re)
 Exported session to ~/Old Chats/oldchat474-site-re.md
 
 ⏺ Skill(comment-file)

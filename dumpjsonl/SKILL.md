@@ -10,7 +10,7 @@ description: Export current session as RAW jsonl (verbatim, no md conversion) to
 When invoked, run this command **without any other logic or reimplementation**:
 
 ```bash
-~/.claude/skills/dumpjsonl/dumpjsonl.command [args]
+~/.claude/skills/dumpboth/dumpjsonl/dumpjsonl.command [args]
 ```
 
 Pass any user-provided args directly. Do not inline the logic. Do not reimagine it.

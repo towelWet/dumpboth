@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Block the Oct 20 project tree before any Old Chats directory is created.
-DUMPBOTH_BLOCK="$(cd "$(dirname "${BASH_SOURCE[0]}")/../dumpboth" && pwd)"
+DUMPBOTH_BLOCK="$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$DUMPBOTH_BLOCK/lib/block/refuse_scam_dir.sh"
 refuse_scam_old_chats "$TARGET_DIR"
 OLD_CHATS_DIR="$TARGET_DIR/Old Chats"

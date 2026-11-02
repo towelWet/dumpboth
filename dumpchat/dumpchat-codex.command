@@ -26,7 +26,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dumpboth/lib/block/refuse_scam_dir.sh"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/block/refuse_scam_dir.sh"
 refuse_scam_old_chats "$TARGET_DIR"
 OLD_CHATS_DIR="$TARGET_DIR/Old Chats"
 mkdir -p "$OLD_CHATS_DIR"

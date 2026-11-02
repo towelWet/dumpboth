@@ -23,7 +23,7 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Same block as dumpboth: this project folder is not ~/Old Chats.
-source "$SCRIPT_DIR/../dumpboth/lib/block/refuse_scam_dir.sh"
+source "$SCRIPT_DIR/../lib/block/refuse_scam_dir.sh"
 refuse_scam_old_chats "$TARGET_DIR"
 OLD_CHATS_DIR="$TARGET_DIR/Old Chats"
 mkdir -p "$OLD_CHATS_DIR"

@@ -10,12 +10,12 @@ set -uo pipefail
 #        dumpboth.command detect [home|target_dir]
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DUMPCHAT_CMD="$SCRIPT_DIR/../dumpchat/dumpchat.command"
-DUMPJSONL_CMD="$SCRIPT_DIR/../dumpjsonl/dumpjsonl.command"
-DUMPCHAT_CURSOR_CMD="$SCRIPT_DIR/../dumpchat/dumpchat-cursor.command"
-DUMPJSONL_CURSOR_CMD="$SCRIPT_DIR/../dumpjsonl/dumpjsonl-cursor.command"
-DUMPCHAT_DEVIN_CMD="$SCRIPT_DIR/../dumpchat/dumpchat-devin.command"
-DUMPJSONL_DEVIN_CMD="$SCRIPT_DIR/../dumpjsonl/dumpjsonl-devin.command"
+DUMPCHAT_CMD="$SCRIPT_DIR/dumpchat/dumpchat.command"
+DUMPJSONL_CMD="$SCRIPT_DIR/dumpjsonl/dumpjsonl.command"
+DUMPCHAT_CURSOR_CMD="$SCRIPT_DIR/dumpchat/dumpchat-cursor.command"
+DUMPJSONL_CURSOR_CMD="$SCRIPT_DIR/dumpjsonl/dumpjsonl-cursor.command"
+DUMPCHAT_DEVIN_CMD="$SCRIPT_DIR/dumpchat/dumpchat-devin.command"
+DUMPJSONL_DEVIN_CMD="$SCRIPT_DIR/dumpjsonl/dumpjsonl-devin.command"
 UUID_RE='^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
 # ---- detect mode -----------------------------------------------------------

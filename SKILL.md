@@ -106,11 +106,11 @@ One function per file, folder-per-concern:
 | Path | Role |
 |---|---|
 | `dumpboth.command` | thin bash orchestrator — wires the pieces, no real logic |
-| `../dumpchat/cursor-session-find.sh` | shared Cursor main-session resolver (md + jsonl cursor dumps) |
-| `../dumpjsonl/dumpjsonl-cursor.command` | verbatim Cursor jsonl export (pairs with dumpchat-cursor) |
-| `../dumpchat/dumpchat-devin.command` | Devin CLI readable-md dump (dispatch → `lib/devin/export`) |
-| `../dumpjsonl/dumpjsonl-devin.command` | verbatim Devin jsonl export (dispatch → `lib/devin/export-jsonl`) |
-| `../dumpchat/lib/devin/*` | Devin pipeline: `locate-db`→`select-session`→`read-messages`/`read-raw`→render. Store: `~/.local/share/devin/cli/sessions.db` (SQLite `sessions`+`message_nodes`); current session = most recent `last_activity_at` |
+| `dumpchat/cursor-session-find.sh` | shared Cursor main-session resolver (md + jsonl cursor dumps) |
+| `dumpjsonl/dumpjsonl-cursor.command` | verbatim Cursor jsonl export (pairs with dumpchat-cursor) |
+| `dumpchat/dumpchat-devin.command` | Devin CLI readable-md dump (dispatch → `lib/devin/export`) |
+| `dumpjsonl/dumpjsonl-devin.command` | verbatim Devin jsonl export (dispatch → `lib/devin/export-jsonl`) |
+| `dumpchat/lib/devin/*` | Devin pipeline: `locate-db`→`select-session`→`read-messages`/`read-raw`→render. Store: `~/.local/share/devin/cli/sessions.db` (SQLite `sessions`+`message_nodes`); current session = most recent `last_activity_at` |
 | `lib/tag/generate_tag.py` | mint the matching 8-hex tag |
 | `lib/counter/shared_next_number.py` | compute the ONE number both dumps share |
 | `lib/detect/scan_pairs.py` | pure scan: group files by number+tag |
@@ -139,4 +139,4 @@ force them onto the same number without touching their normal standalone behavio
 - `/dumpboth detect` — check for desync, get fix suggestions
 - User wants both formats at once, or asks "did md and jsonl match?"
 
-Publishing: upload this real skill folder, with private info removed. Never publish rewritten copy.
+Publishing: before upload, this skill must have no leaks (private paths, personal names, emails, drive paths, private chat notes, blocked-folder paths, machine-only rules). Remove only the leaks, then upload this real skill folder as it is. This repo is the dumpboth skill only. dumpchat and dumpjsonl stay nested here. dbv and dumpconvert are their own repos. No rewritten copy, no invented skills/ parent, no extra release or staging folders.

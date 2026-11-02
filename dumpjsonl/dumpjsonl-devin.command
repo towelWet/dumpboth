@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../dumpboth" && pwd)/lib/block/refuse_scam_dir.sh"
+source "$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib/block/refuse_scam_dir.sh"
 refuse_scam_old_chats "$TARGET_DIR"
 EXPORT_FILE=$(DEVIN_OUTDIR="$TARGET_DIR/Old Chats" "$LIB/export-jsonl" "$APPEND") || exit 1
 echo "Exported raw Devin jsonl to $EXPORT_FILE"

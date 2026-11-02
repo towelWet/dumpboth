@@ -18,7 +18,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../dumpboth/lib/block/refuse_scam_dir.sh"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/block/refuse_scam_dir.sh"
 refuse_scam_old_chats "$TARGET_DIR"
 # export writes to $DEVIN_OUTDIR (default ~/Old Chats); point it at the chosen target.
 EXPORT_FILE=$(DEVIN_OUTDIR="$TARGET_DIR/Old Chats" "$LIB/export" "$APPEND") || exit 1

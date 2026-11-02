@@ -19,7 +19,7 @@ done
 
 # Block the Oct 20 project tree before any Old Chats directory is created.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../dumpboth/lib/block/refuse_scam_dir.sh"
+source "$SCRIPT_DIR/../lib/block/refuse_scam_dir.sh"
 refuse_scam_old_chats "$TARGET_DIR"
 OLD_CHATS_DIR="$TARGET_DIR/Old Chats"
 mkdir -p "$OLD_CHATS_DIR"
