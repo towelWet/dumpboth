@@ -1,28 +1,31 @@
 #!/bin/bash
-# child_guard.sh — detect inherited CLAUDE_CODE_CHILD_SESSION and refuse dump.
-# When this flag is set, Claude Code does NOT write a transcript JSONL for the
-# current session. The SESSION_ID env var points at the PARENT's JSONL, which
-# contains DIFFERENT conversation content. Dumping it would silently export the
-# wrong chat — a scam. The only honest action is to refuse and explain the fix.
+# child_guard.sh — handle CLAUDE_CODE_CHILD_SESSION: check if JSONL is real.
+# Flag can be leaked env var (transcript exists) or real (no transcript).
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 
 _dumpchat_child_guard() {
-  if [ -n "${CLAUDE_CODE_CHILD_SESSION:-}" ]; then
-    echo "" >&2
-    echo "═══ CANNOT DUMP: transcript saving is off ═══" >&2
-    echo "" >&2
-    echo "CLAUDE_CODE_CHILD_SESSION is set in this shell." >&2
-    echo "Claude Code is NOT writing a JSONL for this conversation." >&2
-    echo "SESSION_ID ($CLAUDE_CODE_SESSION_ID) belongs to the PARENT — dumping" >&2
-    echo "it would silently export the wrong chat." >&2
-    echo "" >&2
-    echo "Fix: open a NEW terminal tab/window, then start Claude Code." >&2
-    echo "  Or: unset CLAUDE_CODE_CHILD_SESSION before starting." >&2
-    echo "  Or: restart with CLAUDE_CODE_FORCE_SESSION_PERSISTENCE=1" >&2
-    echo "" >&2
-    echo "═══════════════════════════════════════════════" >&2
-    return 1
+  DUMPCHAT_CHILD_SESSION=""
+  [ -n "${CLAUDE_CODE_CHILD_SESSION:-}" ] || return 0           # no flag, nothing to do
+  [ -n "${CLAUDE_CODE_SESSION_ID:-}" ] || return 0              # no ID to check
+
+  local projects_dir session_file
+  projects_dir="$(dumpchat_realpath "$HOME/.claude/projects")"
+  session_file=$(find "$projects_dir" -type f -name "${CLAUDE_CODE_SESSION_ID}*.jsonl" 2>/dev/null | head -1)
+
+  if [ -n "$session_file" ] && [ -r "$session_file" ]; then     # file exists — check age
+    local file_age now mtime
+    now=$(date +%s)
+    mtime=$(stat -f '%m' "$session_file" 2>/dev/null || echo 0)
+    file_age=$(( now - mtime ))
+    if [ "$file_age" -lt 3600 ]; then                           # modified in last hour = active
+      echo "⚠ CLAUDE_CODE_CHILD_SESSION set but JSONL is active (${file_age}s old) — using it." >&2
+      return 0                                                  # proceed normally with SESSION_ID
+    fi
   fi
-  return 0
+
+  echo "⚠ No active JSONL for session $CLAUDE_CODE_SESSION_ID." >&2
+  echo "  Skipping SESSION_ID, falling through to newest-file scan." >&2
+  DUMPCHAT_CHILD_SESSION=1                                      # skip SESSION_ID shortcut
+  return 0                                                      # never hard-block
 }
