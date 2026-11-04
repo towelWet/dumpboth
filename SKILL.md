@@ -105,12 +105,15 @@ One function per file, folder-per-concern:
 
 | Path | Role |
 |---|---|
-| `dumpboth.command` | thin bash orchestrator — wires the pieces, no real logic |
-| `dumpchat/cursor-session-find.sh` | shared Cursor main-session resolver (md + jsonl cursor dumps) |
-| `dumpjsonl/dumpjsonl-cursor.command` | verbatim Cursor jsonl export (pairs with dumpchat-cursor) |
-| `dumpchat/dumpchat-devin.command` | Devin CLI readable-md dump (dispatch → `lib/devin/export`) |
-| `dumpjsonl/dumpjsonl-devin.command` | verbatim Devin jsonl export (dispatch → `lib/devin/export-jsonl`) |
-| `dumpchat/lib/devin/*` | Devin pipeline: `locate-db`→`select-session`→`read-messages`/`read-raw`→render. Store: `~/.local/share/devin/cli/sessions.db` (SQLite `sessions`+`message_nodes`); current session = most recent `last_activity_at` |
+| `dumpboth.command` | thin orchestrator — sources 7 lib files, no inline logic |
+| `lib/args/parse_mode.sh` | detect cursor/devin mode + shorthand suffix |
+| `lib/args/parse_target.sh` | parse home/append/uuid/dir from args |
+| `lib/args/resolve_target.sh` | cursor-home enforcement + scam-dir block |
+| `lib/detect/dispatch.sh` | detect mode early-exit |
+| `lib/tag/build_suffix.sh` | NEXT_NUM + TAG + FINAL_SUFFIX computation |
+| `lib/execute/resolve_commands.sh` | resolve 6 child dumper command paths |
+| `lib/execute/dispatch_pair.sh` | run chat+jsonl pair, capture exit codes |
+| `lib/execute/check_results.sh` | exit 1 if both failed, print summary |
 | `lib/tag/generate_tag.py` | mint the matching 8-hex tag |
 | `lib/counter/shared_next_number.py` | compute the ONE number both dumps share |
 | `lib/detect/scan_pairs.py` | pure scan: group files by number+tag |
@@ -119,12 +122,41 @@ One function per file, folder-per-concern:
 | `lib/detect/fix_md_only.py` | suggest the conditionally-fillable md→jsonl fix |
 | `lib/detect/suggest_fix.py` | thin combiner of the two fix suggesters |
 | `lib/detect/cli.py` | wires scan+report+suggest for `detect` mode |
-| `~/.claude/skills/dbv/DBV/Sources/DBVCore/` | pure model/parsing (DumpPair, jsonl parser) — no UI |
-| `~/.claude/skills/dbv/DBV/Sources/DBVApp/` | SwiftUI views + AppDelegate (file-open routing) |
+| `dumpchat/dumpchat.command` | thin Claude md dumper (sources shared libs) |
+| `dumpchat/dumpchat-opencode.command` | thin OpenCode md dumper |
+| `dumpchat/dumpchat-cursor.command` | thin Cursor md dumper |
+| `dumpchat/dumpchat-gemini.command` | thin Gemini md dumper |
+| `dumpchat/dumpchat-codex.command` | thin Codex md dumper |
+| `dumpchat/dumpchat-kilo.command` | thin Kilo md dumper |
+| `dumpchat/dumpchat-devin.command` | Devin CLI md dump (dispatch → `lib/devin/export`) |
+| `dumpchat/cursor-session-find.sh` | shared Cursor main-session resolver |
+| `dumpchat/dumpchat-session-find.sh` | 8-line shim sourcing lib/session/resolve.sh |
+| `dumpchat/lib/session/resolve.sh` | orchestrator: UUID, env var, or newest resolution |
+| `dumpchat/lib/session/child_guard.sh` | CLAUDE_CODE_CHILD_SESSION search + honest refuse |
+| `dumpchat/lib/session/resolve_by_id.sh` | UUID lookup across all CLI dirs |
+| `dumpchat/lib/session/resolve_claude.sh` | newest non-memory Claude session |
+| `dumpchat/lib/session/resolve_fallback.sh` | newest non-Claude session scan |
+| `dumpchat/lib/session/claude_candidates.sh` | list Claude jsonls with Finder fallback |
+| `dumpchat/lib/session/finder_find_by_id.sh` | Finder AppleScript EPERM fallback |
+| `dumpchat/lib/session/realpath.sh` | portable realpath via python3 |
+| `dumpchat/lib/session/find_opencode.sh` | find newest OpenCode session |
+| `dumpchat/lib/session/find_codex.sh` | find newest Codex session |
+| `dumpchat/lib/session/find_gemini.sh` | find newest Gemini session |
+| `dumpchat/lib/session/find_kilo.sh` | find newest Kilo session |
+| `dumpchat/lib/shared/parse_simple_args.sh` | basic home/append/target parsing |
+| `dumpchat/lib/shared/parse_uuid_args.sh` | args with UUID support |
+| `dumpchat/lib/shared/setup_old_chats.sh` | block scam dir + mkdir Old Chats |
+| `dumpchat/lib/shared/next_number.sh` | compute next oldchat number |
+| `dumpchat/lib/shared/export_path.sh` | build EXPORT_FILE from number+suffix+ext |
+| `dumpchat/lib/parsers/opencode.py` | OpenCode JSONL parser |
+| `dumpchat/lib/parsers/cursor.py` | Cursor IDE parser |
+| `dumpchat/lib/devin/*` | Devin pipeline: locate-db→select-session→read→render |
+| `dumpjsonl/dumpjsonl.command` | thin Claude jsonl dumper |
+| `dumpjsonl/dumpjsonl-cursor.command` | thin Cursor jsonl dumper |
+| `dumpjsonl/dumpjsonl-devin.command` | Devin jsonl export |
 
-`dumpchat.command` and `dumpjsonl.command` both gained a `DUMP_FORCE_NUM` env-var
-override (backward compatible — unset behaves exactly as before) so `/dumpboth` can
-force them onto the same number without touching their normal standalone behavior.
+`dumpchat.command` and `dumpjsonl.command` use `DUMP_FORCE_NUM` env-var
+override so `/dumpboth` can force them onto the same number.
 
 ## Triggers
 
