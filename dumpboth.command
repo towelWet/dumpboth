@@ -1,111 +1,20 @@
 #!/bin/bash
 set -uo pipefail
-# dumpboth.command — dump BOTH .md (dumpchat) and .jsonl (dumpjsonl) for the current
-# session, on the SAME oldchatN number and the SAME random tag, so the two artifacts
-# can never silently drift apart. Thin orchestrator only — all real logic lives in
-# lib/ (one function per file, per /split-files); this file just wires the pieces.
+# dumpboth.command — pure orchestrator, sources lib/ pieces only.
+# Dumps BOTH .md + .jsonl on same oldchatN number + same random tag.
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
-# Usage: dumpboth.command [cursor] [home] [-append -suffix|suffix] [uuid] [target_dir]
+# Usage: dumpboth.command [cursor|devin] [home] [-append -suffix|suffix] [uuid] [target_dir]
 #        dumpboth.command detect [home|target_dir]
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DUMPCHAT_CMD="$SCRIPT_DIR/dumpchat/dumpchat.command"
-DUMPJSONL_CMD="$SCRIPT_DIR/dumpjsonl/dumpjsonl.command"
-DUMPCHAT_CURSOR_CMD="$SCRIPT_DIR/dumpchat/dumpchat-cursor.command"
-DUMPJSONL_CURSOR_CMD="$SCRIPT_DIR/dumpjsonl/dumpjsonl-cursor.command"
-DUMPCHAT_DEVIN_CMD="$SCRIPT_DIR/dumpchat/dumpchat-devin.command"
-DUMPJSONL_DEVIN_CMD="$SCRIPT_DIR/dumpjsonl/dumpjsonl-devin.command"
-UUID_RE='^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+DUMPBOTH_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export DUMPBOTH_SCRIPT_DIR                                      # child scripts need this
 
-# ---- detect mode -----------------------------------------------------------
-if [[ "${1:-}" == "detect" ]]; then
-  shift
-  TARGET_DIR="$HOME"
-  [[ "${1:-}" == "home" ]] && TARGET_DIR="$HOME"
-  [[ -n "${1:-}" && "${1:-}" != "home" ]] && TARGET_DIR="$1"
-  OLD_CHATS_DIR="$TARGET_DIR/Old Chats"
-  python3 "$SCRIPT_DIR/lib/detect/cli.py" "$OLD_CHATS_DIR"
-  exit $?
-fi
-
-# ---- dump-both mode ---------------------------------------------------------
-CURSOR_MODE=0
-DEVIN_MODE=0
-USER_SUFFIX=""
-TARGET_DIR="$HOME"                                          # pwd minted oldchat1–3 in a project folder on 2026-10-23
-EXPLICIT_TARGET=0                                          # 1 only when the user named home or a directory
-PASSTHROUGH_ARGS=()
-
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    cursor)         CURSOR_MODE=1; shift
-                    # Shorthand: `dumpboth cursor mylabel` == append -mylabel
-                    if [[ $# -gt 0 && "$1" != "home" && "$1" != "append" && "$1" != "-append" && ! "$1" =~ $UUID_RE && ! -d "$1" ]]; then
-                      USER_SUFFIX="${1#-}"
-                      shift
-                    fi
-                    ;;
-    devin)          DEVIN_MODE=1; shift
-                    # Shorthand: `dumpboth devin mylabel` == append -mylabel (mirror of cursor)
-                    if [[ $# -gt 0 && "$1" != "home" && "$1" != "append" && "$1" != "-append" && ! "$1" =~ $UUID_RE && ! -d "$1" ]]; then
-                      USER_SUFFIX="${1#-}"
-                      shift
-                    fi
-                    ;;
-    home)           TARGET_DIR="$HOME"; EXPLICIT_TARGET=1; PASSTHROUGH_ARGS+=("home"); shift ;;
-    append|-append) shift; USER_SUFFIX="${1:-}"; USER_SUFFIX="${USER_SUFFIX#-}"; shift ;;
-    *)              # uuid → pass through; existing dir → pass through; bare word → treat as suffix (same shorthand cursor/devin have)
-                    if [[ "$1" =~ $UUID_RE || -d "$1" ]]; then
-                      [[ -d "$1" ]] && EXPLICIT_TARGET=1 && TARGET_DIR="$1"
-                      PASSTHROUGH_ARGS+=("$1")
-                    else
-                      USER_SUFFIX="${1#-}"                  # strip leading dash if present
-                    fi
-                    shift ;;
-
-  esac
-done
-
-# Cursor dumps never follow the shell cwd. A leftover pwd (the last project a build
-# cd'd into) is not an archive — that wrote this session into a project folder
-# on 2026-10-23. No named directory means ~/Old Chats, and that decision is passed
-# to the child dumpers so they cannot resolve pwd on their own.
-if [[ "$CURSOR_MODE" -eq 1 && "$EXPLICIT_TARGET" -eq 0 ]]; then
-  TARGET_DIR="$HOME"
-  PASSTHROUGH_ARGS+=("home")
-fi
-
-# Block the project folder that minted oldchat1–3. Home is the only real archive.
-source "$SCRIPT_DIR/lib/block/refuse_scam_dir.sh"
-refuse_scam_old_chats "$TARGET_DIR"
-OLD_CHATS_DIR="$TARGET_DIR/Old Chats"
-mkdir -p "$OLD_CHATS_DIR"
-
-NEXT_NUM="$(python3 "$SCRIPT_DIR/lib/counter/shared_next_number.py" "$OLD_CHATS_DIR")"
-TAG="$(python3 "$SCRIPT_DIR/lib/tag/generate_tag.py")"
-
-if [[ -n "$USER_SUFFIX" ]]; then
-  FINAL_SUFFIX="${USER_SUFFIX}-${TAG}"
-else
-  FINAL_SUFFIX="$TAG"
-fi
-
-# "${arr[@]}" is unbound under `set -u` when the array is empty.
-set +u
-if [[ "$CURSOR_MODE" -eq 1 ]]; then
-  DUMP_FORCE_NUM="$NEXT_NUM" "$DUMPCHAT_CURSOR_CMD" "${PASSTHROUGH_ARGS[@]}" -append "$FINAL_SUFFIX"
-  DUMP_FORCE_NUM="$NEXT_NUM" "$DUMPJSONL_CURSOR_CMD" "${PASSTHROUGH_ARGS[@]}" -append "$FINAL_SUFFIX"
-elif [[ "$DEVIN_MODE" -eq 1 ]]; then
-  # Devin CLI: readable .md + verbatim message_nodes .jsonl, same number+tag. Both
-  # auto-select the current session (most recent in the Devin CLI sessions.db).
-  DUMP_FORCE_NUM="$NEXT_NUM" "$DUMPCHAT_DEVIN_CMD" "${PASSTHROUGH_ARGS[@]}" -append "$FINAL_SUFFIX"
-  DUMP_FORCE_NUM="$NEXT_NUM" "$DUMPJSONL_DEVIN_CMD" "${PASSTHROUGH_ARGS[@]}" -append "$FINAL_SUFFIX"
-else
-  DUMP_FORCE_NUM="$NEXT_NUM" "$DUMPCHAT_CMD" "${PASSTHROUGH_ARGS[@]}" -append "$FINAL_SUFFIX"
-  DUMP_FORCE_NUM="$NEXT_NUM" "$DUMPJSONL_CMD" "${PASSTHROUGH_ARGS[@]}" -append "$FINAL_SUFFIX"
-fi
-set -u
-
-MODE=cli; [[ $CURSOR_MODE -eq 1 ]] && MODE=cursor; [[ $DEVIN_MODE -eq 1 ]] && MODE=devin
-echo "dumpboth: tag=$TAG number=$NEXT_NUM mode=$MODE"
+source "$DUMPBOTH_SCRIPT_DIR/lib/detect/dispatch.sh" "$@"       # exits if detect mode
+source "$DUMPBOTH_SCRIPT_DIR/lib/args/parse_mode.sh" "$@"       # detects cursor/devin mode + shorthand suffix
+source "$DUMPBOTH_SCRIPT_DIR/lib/args/parse_target.sh"         # parses home/append/uuid/dir from remaining args
+source "$DUMPBOTH_SCRIPT_DIR/lib/args/resolve_target.sh"        # enforces cursor-home, blocks scam dirs, sets OLD_CHATS_DIR
+source "$DUMPBOTH_SCRIPT_DIR/lib/tag/build_suffix.sh"           # computes NEXT_NUM, TAG, FINAL_SUFFIX
+source "$DUMPBOTH_SCRIPT_DIR/lib/execute/resolve_commands.sh"    # resolves 6 child dumper paths
+source "$DUMPBOTH_SCRIPT_DIR/lib/execute/dispatch_pair.sh"      # runs chat + jsonl dumpers, captures CHAT_RC/JSONL_RC
+source "$DUMPBOTH_SCRIPT_DIR/lib/execute/check_results.sh"      # exits 1 if both failed, prints summary

@@ -19,6 +19,8 @@ def get_header(cli_type, session_file, target_dir):
                      "│▲▲▲│  OpenCode AI"),
         "god":      (" ┏━━━━┓   God Code",
                      "┃ G ┃  God v4 · Native"),
+        "cursor":   (" ◈ ◈ ◈ ◈ ◈   Cursor IDE",
+                     "  ◈ ◈ ◈    Composer Agent"),
         "god-events": (" ┏━━━━┓   God Code",                # event-stream jsonl (parsers/god_events.py)
                        "┃ G ┃  God · event stream"),
     }
