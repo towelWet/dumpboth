@@ -1,28 +1,18 @@
 #!/bin/bash
-# find_kilo.sh — find most recent Kilo (Kilocode) session directory.
+# find_kilo.sh — find Kilo (Kilocode) session directory for ONE exact session ID.
+# ID source: `id <ID>` arg only (no Kilo env var known; CLI not installed to verify).
+# Layout: storage/session/message/<sessionID>/*.json — dir name IS session ID.
+# NEVER picks newest — newest-mtime guessing dumped wrong chats (oldchat694). No ID → refuse.
 # Sets: SESSION_FILE (path to session dir, not a single file).
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 
 find_kilo_session() {
   SESSION_FILE=""
-  local roots=("$HOME/.kilocode/storage/session/message" "$HOME/.kilo/storage/session/message")
-  local newest_mtime=0 newest_dir=""
-
-  for root in "${roots[@]}"; do
-    [ -d "$root" ] || continue
-    for sd in "$root"/*/; do
-      [ -d "$sd" ] || continue
-      for fp in "$sd"*.json; do
-        [ -f "$fp" ] || continue
-        local mtime; mtime=$(stat -f '%m' "$fp" 2>/dev/null) || continue
-        if [ "$mtime" -gt "$newest_mtime" ]; then
-          newest_mtime=$mtime; newest_dir="$sd"
-        fi
-      done
-    done
+  local want="${SESSION_ID:-}" root
+  [ -n "$want" ] || { echo "Refusing: no Kilo session ID (pass: id <ID>)" >&2; return 1; }
+  for root in "$HOME/.kilocode/storage/session/message" "$HOME/.kilo/storage/session/message"; do
+    [ -d "$root/$want" ] && SESSION_FILE="$root/$want" && return 0   # exact dir name only
   done
-
-  [ -n "$newest_dir" ] && SESSION_FILE="${newest_dir%/}" && return 0
-  return 1
+  echo "Refusing: no Kilo session dir for $want" >&2; return 1
 }

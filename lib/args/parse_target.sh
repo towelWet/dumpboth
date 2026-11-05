@@ -16,6 +16,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     home)           TARGET_DIR="$HOME"; EXPLICIT_TARGET=1; PASSTHROUGH_ARGS+=("home"); shift ;;
     append|-append) shift; USER_SUFFIX="${1:-}"; USER_SUFFIX="${USER_SUFFIX#-}"; shift ;;
+    id|-id|--id)    PASSTHROUGH_ARGS+=("id" "${2:-}"); shift; shift ;;  # non-UUID exact session ID (devin)
     *)              if [[ "$1" =~ $UUID_RE || -d "$1" ]]; then
                       [[ -d "$1" ]] && EXPLICIT_TARGET=1 && TARGET_DIR="$1"
                       PASSTHROUGH_ARGS+=("$1")

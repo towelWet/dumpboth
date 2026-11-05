@@ -23,6 +23,18 @@ Can't see `.claude`? Press Cmd+Shift+. in Finder.
 
 Your chats land in `~/Old Chats/`.
 
+dumpboth saves only the chat whose session ID it's given; it never guesses "newest".
+Claude Code: ID read from `CLAUDE_CODE_SESSION_ID`. Codex, Devin and cursor-agent:
+their session env var is read when set. Otherwise, pass the ID:
+
+```text
+/dumpboth cursor <chat-uuid>
+/dumpboth devin id <session-id>
+/dumpchat gemini id <session-id>
+```
+
+No ID or no matching file → it refuses and writes nothing.
+
 ## Also see
 
 [DBV](https://github.com/towelWet/dbv), a Mac chat viewer for your saved Claude chats.

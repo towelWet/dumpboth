@@ -1,6 +1,6 @@
 #!/bin/bash
 set -uo pipefail
-# dumpchat-gemini.command — thin orchestrator: dump most recent Gemini CLI session.
+# dumpchat-gemini.command — thin orchestrator: dump ONE exact Gemini CLI session (`id <ID>` arg or CLI env ID; none → refuse, never newest).
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 

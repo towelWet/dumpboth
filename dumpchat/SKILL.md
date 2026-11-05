@@ -54,7 +54,7 @@ The .command script handles:
 
 **Canonical source is jsonl.** This skill exports jsonl → md for human reading. Markdown is never the training source.
 
-1. **Detects current session** - finds the most recently modified JSONL in `~/.claude/projects/` that is NOT a memory agent session (skips files containing "Hello memory agent")
+1. **Resolves current session by exact ID** - `CLAUDE_CODE_SESSION_ID` env (or uuid / `id <ID>` arg) → that exact JSONL. No ID or no file → refuses. Never picks newest (dumped wrong chats 2026-11-05)
 2. **Reads session data** - loads the conversation from JSONL format
 3. **Converts to markdown** - formats conversation as readable markdown with speaker labels
 4. **Auto-increments filename** - checks existing `oldchat*.md` files and saves as next number

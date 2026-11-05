@@ -1,31 +1,20 @@
 #!/bin/bash
-# find_opencode.sh — find most recent OpenCode session file.
-# Sets: SESSION_FILE. Checks jsonl in sessions/, root, then hierarchical JSON.
+# find_opencode.sh — find legacy OpenCode session file/dir for ONE exact session ID.
+# ID source: `id <ID>` arg only (opencode 1.18.21 exports no session-ID env var; checked 2026-11-05).
+# Checks legacy layouts: sessions/<ID>.jsonl, root <ID>.jsonl, storage/session/message/<ID>/.
+# KNOWN GAP: opencode 1.18 stores chats in ~/.local/share/opencode/opencode.db — not read here.
+# NEVER picks newest — newest-mtime guessing dumped wrong chats (oldchat694). No ID → refuse.
+# Sets: SESSION_FILE.
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 
 find_opencode_session() {
   SESSION_FILE=""
-  local newest
-
-  # Step 1: JSONL in ~/.opencode/sessions/
-  if [ -d "$HOME/.opencode/sessions" ]; then
-    newest=$(find "$HOME/.opencode/sessions" -type f -name "*.jsonl" -print0 2>/dev/null \
-      | xargs -0 stat -f '%m %N' 2>/dev/null | sort -rn | head -1 | awk '{print $2}')
-    [ -n "$newest" ] && [ -f "$newest" ] && SESSION_FILE="$newest" && return 0
-  fi
-
-  # Step 2: JSONL in root ~/.opencode/
-  newest=$(find "$HOME/.opencode" -maxdepth 1 -type f -name "*.jsonl" -print0 2>/dev/null \
-    | xargs -0 stat -f '%m %N' 2>/dev/null | sort -rn | head -1 | awk '{print $2}')
-  [ -n "$newest" ] && [ -f "$newest" ] && SESSION_FILE="$newest" && return 0
-
-  # Step 3: Hierarchical JSON in storage/session/message/
-  local hier="$HOME/.opencode/storage/session/message"
-  if [ -d "$hier" ]; then
-    newest=$(find "$hier" -type f -name "*.json" -print0 2>/dev/null \
-      | xargs -0 stat -f '%m %N' 2>/dev/null | sort -rn | head -1 | awk '{print $2}')
-    [ -n "$newest" ] && [ -f "$newest" ] && SESSION_FILE="$newest" && return 0
-  fi
-  return 1
+  local want="${SESSION_ID:-}" p
+  [ -n "$want" ] || { echo "Refusing: no OpenCode session ID (pass: id <ID>)" >&2; return 1; }
+  for p in "$HOME/.opencode/sessions/$want.jsonl" "$HOME/.opencode/$want.jsonl" \
+           "$HOME/.opencode/storage/session/message/$want"; do
+    [ -e "$p" ] && SESSION_FILE="$p" && return 0                # dir form parsed by kilo parser (ALSO_HANDLES)
+  done
+  echo "Refusing: no OpenCode session for $want (opencode.db not supported)" >&2; return 1
 }

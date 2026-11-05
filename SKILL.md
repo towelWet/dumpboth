@@ -11,7 +11,7 @@ description: Dump BOTH .md (dumpchat) and .jsonl (dumpjsonl) for the current ses
 ## EXECUTE IMMEDIATELY
 
 ```bash
-~/.claude/skills/dumpboth/dumpboth.command [cursor|devin] [home] [append -suffix] [uuid] [target_dir]
+~/.claude/skills/dumpboth/dumpboth.command [cursor|devin] [home] [append -suffix] [uuid | id <ID>] [target_dir]
 ```
 
 Pass through the same args `/dumpchat` and `/dumpjsonl` accept, plus **`cursor`** for
@@ -129,7 +129,7 @@ One function per file, folder-per-concern:
 | `dumpchat/dumpchat-codex.command` | thin Codex md dumper |
 | `dumpchat/dumpchat-kilo.command` | thin Kilo md dumper |
 | `dumpchat/dumpchat-devin.command` | Devin CLI md dump (dispatch → `lib/devin/export`) |
-| `dumpchat/cursor-session-find.sh` | shared Cursor main-session resolver |
+| `dumpchat/cursor-session-find.sh` | Cursor resolver: exact uuid or `CURSOR_AGENT_CHAT_ID`; else refuse |
 | `dumpchat/dumpchat-session-find.sh` | 8-line shim sourcing lib/session/resolve.sh |
 | `dumpchat/lib/session/resolve.sh` | orchestrator: exact ID only (uuid arg or `CLAUDE_CODE_SESSION_ID`); refuses otherwise |
 | `dumpchat/lib/session/child_guard.sh` | CHILD flag + no ID → refuse; CHILD flag + ID → trust ID |
@@ -140,10 +140,10 @@ One function per file, folder-per-concern:
 > previous chat instead of current one (oldchat694 = duplicate of 693). Removed.
 | `dumpchat/lib/session/finder_find_by_id.sh` | Finder AppleScript EPERM fallback |
 | `dumpchat/lib/session/realpath.sh` | portable realpath via python3 |
-| `dumpchat/lib/session/find_opencode.sh` | find newest OpenCode session |
-| `dumpchat/lib/session/find_codex.sh` | find newest Codex session |
-| `dumpchat/lib/session/find_gemini.sh` | find newest Gemini session |
-| `dumpchat/lib/session/find_kilo.sh` | find newest Kilo session |
+| `dumpchat/lib/session/find_opencode.sh` | exact ID (`id <ID>`) in legacy layouts; opencode.db not supported |
+| `dumpchat/lib/session/find_codex.sh` | exact ID: `id <ID>` or `CODEX_THREAD_ID`/`CODEX_SESSION_ID` |
+| `dumpchat/lib/session/find_gemini.sh` | exact ID (`id <ID>`), verified against line-1 `sessionId` |
+| `dumpchat/lib/session/find_kilo.sh` | exact ID (`id <ID>`) = session dir name |
 | `dumpchat/lib/shared/parse_simple_args.sh` | basic home/append/target parsing |
 | `dumpchat/lib/shared/parse_uuid_args.sh` | args with UUID support |
 | `dumpchat/lib/shared/setup_old_chats.sh` | block scam dir + mkdir Old Chats |
@@ -151,7 +151,7 @@ One function per file, folder-per-concern:
 | `dumpchat/lib/shared/export_path.sh` | build EXPORT_FILE from number+suffix+ext |
 | `dumpchat/lib/parsers/opencode.py` | OpenCode JSONL parser |
 | `dumpchat/lib/parsers/cursor.py` | Cursor IDE parser |
-| `dumpchat/lib/devin/*` | Devin pipeline: locate-db→select-session→read→render |
+| `dumpchat/lib/devin/*` | Devin pipeline: locate-db→select-session (exact `id <ID>` or `DEVIN_SESSION_ID`)→read→render |
 | `dumpjsonl/dumpjsonl.command` | thin Claude jsonl dumper |
 | `dumpjsonl/dumpjsonl-cursor.command` | thin Cursor jsonl dumper |
 | `dumpjsonl/dumpjsonl-devin.command` | Devin jsonl export |

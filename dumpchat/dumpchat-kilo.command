@@ -1,6 +1,6 @@
 #!/bin/bash
 set -uo pipefail
-# dumpchat-kilo.command — thin orchestrator: dump most recent Kilo session.
+# dumpchat-kilo.command — thin orchestrator: dump ONE exact Kilo session (`id <ID>` arg or CLI env ID; none → refuse, never newest).
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 

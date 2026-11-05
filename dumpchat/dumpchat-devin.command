@@ -1,9 +1,9 @@
 #!/bin/bash
 # dumpchat-devin — Devin CLI session dump dispatcher (readable .md).
-# Reads the live session from ~/.local/share/devin/cli/sessions.db (most recent by
-# last_activity_at) and renders it to <target>/Old Chats/oldchatN[.suffix].md.
-# Args: [home] [-append -suffix|suffix] [target_dir]   (uuid args are ignored —
-# Devin selects the current session automatically). Real work lives in lib/devin/.
+# Reads ONE exact session from ~/.local/share/devin/cli/sessions.db and renders it to
+# <target>/Old Chats/oldchatN[.suffix].md. Never "most recent" (dumped wrong chats 2026-11-05).
+# Args: [home] [-append -suffix|suffix] [id <ID>] [target_dir]
+# ID: `id <ID>` arg, else DEVIN_SESSION_ID env; neither → refuse. Real work lives in lib/devin/.
 set -uo pipefail
 
 LIB="$(cd "$(dirname "$0")" && pwd)/lib/devin"
@@ -14,6 +14,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     home)            TARGET_DIR="$HOME"; shift ;;                 # -> ~/Old Chats/
     -append|append)  shift; APPEND="${1:-}"; APPEND="${APPEND#-}"; shift ;;
+    id|-id|--id)     shift; export DEVIN_WANT_ID="${1:-}"; shift ;;  # exact Devin session ID (not a UUID)
     *)               [[ -d "$1" ]] && TARGET_DIR="$1"; shift ;;   # explicit target dir; ignore stray tokens
   esac
 done

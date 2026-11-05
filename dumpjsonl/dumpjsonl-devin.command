@@ -1,9 +1,9 @@
 #!/bin/bash
 # dumpjsonl-devin — Devin CLI session RAW jsonl dispatcher (verbatim message_nodes).
-# Pairs with dumpchat-devin: same session (most recent in the Devin CLI sessions.db),
-# same numbering, but emits the untouched chat_message nodes (all roles) one per line
+# Pairs with dumpchat-devin: same exact session ID (never "most recent"), same numbering,
+# but emits the untouched chat_message nodes (all roles) one per line
 # instead of a rendered transcript. Real work lives in ../dumpchat/lib/devin/export-jsonl.
-# Args: [home] [-append -suffix|suffix] [target_dir]
+# Args: [home] [-append -suffix|suffix] [id <ID>] [target_dir]   (no ID → DEVIN_SESSION_ID; none → refuse)
 set -uo pipefail
 
 LIB="$(cd "$(dirname "$0")/../dumpchat/lib/devin" && pwd)"
@@ -14,6 +14,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     home)            TARGET_DIR="$HOME"; shift ;;
     -append|append)  shift; APPEND="${1:-}"; APPEND="${APPEND#-}"; shift ;;
+    id|-id|--id)     shift; export DEVIN_WANT_ID="${1:-}"; shift ;;  # exact Devin session ID (not a UUID)
     *)               [[ -d "$1" ]] && TARGET_DIR="$1"; shift ;;
   esac
 done

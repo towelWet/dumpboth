@@ -14,12 +14,12 @@ DUMPBOTH_REMAINING_ARGS=()
 case "${1:-}" in
   cursor) CURSOR_MODE=1; shift
           # Shorthand: `dumpboth cursor mylabel` == append -mylabel
-          if [[ $# -gt 0 && "$1" != "home" && "$1" != "append" && "$1" != "-append" && ! "$1" =~ $UUID_RE && ! -d "$1" ]]; then
+          if [[ $# -gt 0 && "$1" != "home" && "$1" != "append" && "$1" != "-append" && "$1" != "id" && ! "$1" =~ $UUID_RE && ! -d "$1" ]]; then
             USER_SUFFIX="${1#-}"; shift
           fi ;;
   devin)  DEVIN_MODE=1; shift
-          # Shorthand: `dumpboth devin mylabel` == append -mylabel
-          if [[ $# -gt 0 && "$1" != "home" && "$1" != "append" && "$1" != "-append" && ! "$1" =~ $UUID_RE && ! -d "$1" ]]; then
+          # Shorthand: `dumpboth devin mylabel` == append -mylabel (`id` excluded: next token is session ID)
+          if [[ $# -gt 0 && "$1" != "home" && "$1" != "append" && "$1" != "-append" && "$1" != "id" && ! "$1" =~ $UUID_RE && ! -d "$1" ]]; then
             USER_SUFFIX="${1#-}"; shift
           fi ;;
 esac

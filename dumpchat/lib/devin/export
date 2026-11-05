@@ -8,8 +8,8 @@ LIB="$(cd "$(dirname "$0")" && pwd)"
 # 1. Locate database
 DB=$("$LIB/locate-db") || exit 1
 
-# 2. Select most recent session
-SESSION_JSON=$("$LIB/select-session.py" "$DB") || exit 1
+# 2. Select EXACT session: DEVIN_WANT_ID (from `id <ID>` arg) else DEVIN_SESSION_ID env. Never newest.
+SESSION_JSON=$("$LIB/select-session.py" "$DB" "${DEVIN_WANT_ID:-${DEVIN_SESSION_ID:-}}") || exit 1
 SESSION_ID=$(echo "$SESSION_JSON" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
 MODEL=$(echo "$SESSION_JSON"     | python3 -c "import sys,json; print(json.load(sys.stdin).get('model','') or '')")
 TITLE=$(echo "$SESSION_JSON"     | python3 -c "import sys,json; print(json.load(sys.stdin).get('title','') or '')")

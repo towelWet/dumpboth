@@ -14,6 +14,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     home)           TARGET_DIR="$HOME"; shift ;;
     -append|append) shift; APPEND_SUFFIX="${1:-}"; APPEND_SUFFIX="${APPEND_SUFFIX#-}"; shift ;;
+    id|-id|--id)    shift; SESSION_ID="${1:-}"; shift ;;        # explicit `id <ID>` form, same as bare uuid
     *)              [[ "$1" =~ $UUID_RE ]] && SESSION_ID="$1" || TARGET_DIR="$1"; shift ;;
   esac
 done

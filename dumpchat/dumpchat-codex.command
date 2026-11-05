@@ -1,6 +1,6 @@
 #!/bin/bash
 set -uo pipefail
-# dumpchat-codex.command — thin orchestrator: dump most recent Codex CLI session.
+# dumpchat-codex.command — thin orchestrator: dump ONE exact Codex CLI session (`id <ID>` arg or CLI env ID; none → refuse, never newest).
 # NEVER DELETE COMMENTS — explain every non-obvious line.
 # Update comments with the code; do not strip them.
 
