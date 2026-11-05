@@ -131,12 +131,13 @@ One function per file, folder-per-concern:
 | `dumpchat/dumpchat-devin.command` | Devin CLI md dump (dispatch → `lib/devin/export`) |
 | `dumpchat/cursor-session-find.sh` | shared Cursor main-session resolver |
 | `dumpchat/dumpchat-session-find.sh` | 8-line shim sourcing lib/session/resolve.sh |
-| `dumpchat/lib/session/resolve.sh` | orchestrator: UUID, env var, or newest resolution |
-| `dumpchat/lib/session/child_guard.sh` | CLAUDE_CODE_CHILD_SESSION search + honest refuse |
+| `dumpchat/lib/session/resolve.sh` | orchestrator: exact ID only (uuid arg or `CLAUDE_CODE_SESSION_ID`); refuses otherwise |
+| `dumpchat/lib/session/child_guard.sh` | CHILD flag + no ID → refuse; CHILD flag + ID → trust ID |
 | `dumpchat/lib/session/resolve_by_id.sh` | UUID lookup across all CLI dirs |
-| `dumpchat/lib/session/resolve_claude.sh` | newest non-memory Claude session |
-| `dumpchat/lib/session/resolve_fallback.sh` | newest non-Claude session scan |
-| `dumpchat/lib/session/claude_candidates.sh` | list Claude jsonls with Finder fallback |
+
+> **Claude dumps NEVER pick "newest" JSONL (2026-11-05).** Old newest/recent-mtime
+> fallbacks (`resolve_claude.sh`, `resolve_fallback.sh`, `claude_candidates.sh`) dumped
+> previous chat instead of current one (oldchat694 = duplicate of 693). Removed.
 | `dumpchat/lib/session/finder_find_by_id.sh` | Finder AppleScript EPERM fallback |
 | `dumpchat/lib/session/realpath.sh` | portable realpath via python3 |
 | `dumpchat/lib/session/find_opencode.sh` | find newest OpenCode session |
